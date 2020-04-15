@@ -1,0 +1,1 @@
+The current user is: <%= session.getAttribute("username") %>
