@@ -23,11 +23,6 @@ public class ReservationServlet extends HttpServlet{
         }
 
         restaurant.book(idx, name);
-        response.sendDirect("/mvc/index.jsp");
+        response.sendRedirect("/mvc/index.jsp");
     }
-}
-
-
-public class ReservationsServlet {
-
 }
