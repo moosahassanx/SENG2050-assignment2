@@ -20,7 +20,7 @@ public class newGameServlet extends HttpServlet {
       String difficulty = request.getParameter("gameDifficulty");
       
       GameBean gameBeanObject = new GameBean(difficulty);
-      session.setAttribute("user", gameBeanObject);
+      session.setAttribute("minesweeper", gameBeanObject);
       
       response.sendRedirect("game.jsp");
 	}

@@ -32,6 +32,10 @@
             <c:set var = "rowNum" scope="session" value="${gameBeanObject.getRow()}"/>
             <c:set var = "colNum" scope="session" value="${gameBeanObject.getColumn()}"/>
 
+            <c:forEach items="${rowNum}" var="8">
+                <p>test</p>
+            </c:forEach>
+            
             <table class="minesweeper-table">
                 <tr class="chill-cell">
                     <c:forEach var = "i" begin = "1" end = "10">
