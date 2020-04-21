@@ -1,4 +1,6 @@
-// package assignment1;
+// connect it to a bean
+// connect it to database (but leave this to later)
+
 // Import required java libraries
 import java.io.*;
 import java.util.Random;
@@ -10,28 +12,17 @@ import javax.servlet.annotation.WebServlet;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
+import beans.UserBean;
+
 @WebServlet(urlPatterns = {"/LoginServlet"})
 public class loginServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// parameters
-        String username = request.getParameter("username");
+    HttpSession session = request.getSession();
+    String username = request.getParameter("username");
 
-        UserBean user = new UserBean(username);
-        HttpSession session = request.getSession();
-        session.setAttribute("UserBean", username);
+    UserBean userBeanObject = new UserBean(username);    
+    session.setAttribute("user", userBeanObject);
 
-        // forward the user to newGame.jsp with their session data
-        RequestDispatcher requestDispatcher = request.getRequestDispatcher("");
-        requestDispatcher.forward(request, response);
+    response.sendRedirect("newgame.jsp");
 	}
 }
-
-
-/*
-User user = new User(username, userPass);
-HttpSession session = request.getSession();
-session.setAttribute("User", user);
-// forward the user to loggedin.jsp with their session data
-RequestDispatcher rd = request.getRequestDispatcher("Loggedin.jsp");
-rd.forward(request, response);
-*/
