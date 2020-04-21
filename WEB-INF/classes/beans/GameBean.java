@@ -9,10 +9,12 @@ public class GameBean implements Serializable{
      */
     private static final long serialVersionUID = 1L;
 
-    int row;
-    int column;
-    String time;
-    String difficulty;
+    private int row;
+    private int column;
+    private String time;
+    private String difficulty;
+    private Cells[][] cellArray;
+
 
     //constructors 
     public GameBean() { }
@@ -20,17 +22,10 @@ public class GameBean implements Serializable{
     public GameBean(String d){
         difficulty = d;
         setTableSize();
+        cellArray = new Cells[row][column];
     }
 
-    public void setDifficulty(String d){
-        this.difficulty = d;
-        setTableSize();
-    }
-    
-    public String getDifficulty(){
-        return this.difficulty;
-    }
-
+    // game methods
     public void setTableSize(){
         if(difficulty.equals("Beginner")){
             row = 10;
@@ -42,6 +37,29 @@ public class GameBean implements Serializable{
             row = 15;
             column = 15;
         }
+    }
+
+    public void testCell(){
+        /*
+        if(cellSelected.isMine()){
+            - pop-up box saying you fucked up
+            - redirect to newgame.jsp
+            - delete game from session
+        }else{
+            - cellSelected.surroundingMines()
+        }
+        */
+    }
+
+    // mutators
+    public void setDifficulty(String d){
+        this.difficulty = d;
+        setTableSize();
+    }
+    
+    // accessors
+    public String getDifficulty(){
+        return this.difficulty;
     }
 
     public int getRow(){
