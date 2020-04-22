@@ -22,7 +22,7 @@
 </head>
 <body>
     <div class="box">
-        <form action="#" method="post">
+        <form action="gameServlet" method="post">
             <h1>Minesweeper</h1>
 
             <c:set var = "difficulty" scope="session" value="${gameBeanObject.getDifficulty()}"/>
@@ -49,6 +49,8 @@
         </form>
         <form action="login.jsp" method="post">
             <input type="submit" name="" value="Save">
+        </form>
+        <form action="newgame.jsp" method="post">
             <input type="submit" name="" value="Restart">
         </form>
         
