@@ -20,7 +20,7 @@ public class loginServlet extends HttpServlet {
     HttpSession session = request.getSession();
     String username = request.getParameter("username");
 
-    UserBean userBeanObject = new UserBean(username);    
+    UserBean userBeanObject = new UserBean(username);
     session.setAttribute("user", userBeanObject);
 
     response.sendRedirect("newgame.jsp");

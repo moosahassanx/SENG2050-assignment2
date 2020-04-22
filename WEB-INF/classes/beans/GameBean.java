@@ -14,6 +14,7 @@ public class GameBean implements Serializable{
     private String time;
     private String difficulty;
     private Cells[][] cellArray;
+    private UserBean UserObject;
 
 
     //constructors 
@@ -34,8 +35,8 @@ public class GameBean implements Serializable{
             row = 15;
             column = 15;
         }else{
-            row = 15;
-            column = 15;
+            row = 20;
+            column = 20;
         }
     }
 

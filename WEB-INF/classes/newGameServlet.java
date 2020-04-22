@@ -25,27 +25,3 @@ public class newGameServlet extends HttpServlet {
       response.sendRedirect("game.jsp");
 	}
 }
-
-/* LOGINSERVLET.JAVA
-HttpSession session = request.getSession();
-String username = request.getParameter("username");
-
-UserBean userBeanObject = new UserBean(username);    
-session.setAttribute("user", userBeanObject);
-
-response.sendRedirect("newgame.jsp");
-*/
-
-/* OLD SAVE
-// parameters
-String username = request.getParameter("username");
-String gameDifficulty = request.getParameter("gameDifficulty");
-
-UserBean user = new UserBean(username);
-HttpSession session = request.getSession();
-session.setAttribute("UserBean", username);
-
-// forward the user to newGame.jsp with their session data
-RequestDispatcher requestDispatcher = request.getRequestDispatcher("game.jsp");
-requestDispatcher.forward(request, response);
-*/
