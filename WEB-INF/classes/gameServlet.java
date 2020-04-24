@@ -9,6 +9,8 @@ import javax.servlet.annotation.WebServlet;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
 
+import beans.*;
+
 
 @WebServlet(urlPatterns = {"/gameServlet"})
 public class gameServlet extends HttpServlet {
@@ -16,7 +18,7 @@ public class gameServlet extends HttpServlet {
       HttpSession session = request.getSession();
       String cellPosition = request.getParameter("cell");
       
-      
+      session.getAttribute("minesweeper");
       
       response.sendRedirect("game.jsp");
 	}
