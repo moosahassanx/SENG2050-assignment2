@@ -1,3 +1,11 @@
+<%@page contentType="text/html" import="java.util.*" %>
+
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+
+<%@ page import="java.io.IOException" %>
+<%@page language="java" contentType="text/html" pageEncoding="UTF-8" %>
+
 <jsp:useBean id="user"
     scope="session"
     class="beans.UserBean"/>
@@ -16,7 +24,7 @@
     <form class="box" action="newGameServlet" method="post">
         <h1>Select Level</h1>
 
-        <p id="p-text">User: <jsp:getProperty name="user" property="username" /></p>
+        <p id="p-text">User: <c:out value = "${user.getUsername()}"/></p>
         <input type="hidden" name="username" value="<jsp:getProperty name="user" property="username" />">
         <input type="submit" name="gameDifficulty" value="Beginner">
         <input type="submit" name="gameDifficulty" value="Intermediate">
