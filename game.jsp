@@ -6,8 +6,6 @@
 <%@ page import="java.io.IOException" %>
 <%@page language="java" contentType="text/html" pageEncoding="UTF-8" %>
 
-
-
 <jsp:useBean id="minesweeper"
     scope="session"
     class="beans.GameBean"/>
@@ -18,6 +16,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <script type="text/javascript" src="js/javascript.js"></script>
     <title>Document</title>
 </head>
 <body>
@@ -27,15 +26,13 @@
 
             <c:set var = "difficulty" scope="session" value="${gameBeanObject.getDifficulty()}"/>
             
-            <p id="p-text">Difficulty: <c:out value = "${minesweeper.difficulty}"/></p>       
+            <p id="p-text">Difficulty: <c:out value = "${minesweeper.difficulty}"/></p>
 
-            <c:set var = "rowNum" scope="session" value="${gameBeanObject.getRow()}"/>
-            <c:set var = "colNum" scope="session" value="${gameBeanObject.getColumn()}"/>
             
             <table class="minesweeper-table">
                 <tr>
                     <c:forEach begin = "1" end = "${minesweeper.getRow()}">
-                        <th class="chill-cell"><button class="sweep-button"><img class="img-fill" src="" alt=""></button></th>
+                        <th class="chill-cell"><button class="sweep-button" name="cell" value="00"><img class="img-fill" src="" alt=""></button></th>
                     </c:forEach>
                 </tr>
                 <c:forEach begin = "1" end = "${minesweeper.getRow() - 1}">
