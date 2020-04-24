@@ -28,17 +28,12 @@
             
             <p id="p-text">Difficulty: <c:out value = "${minesweeper.difficulty}"/></p>
 
-            
+            <!-- new table -->
             <table class="minesweeper-table">
-                <tr>
-                    <c:forEach begin = "1" end = "${minesweeper.getRow()}">
-                        <th class="chill-cell"><button class="sweep-button" name="cell" value="00"><img class="img-fill" src="" alt=""></button></th>
-                    </c:forEach>
-                </tr>
-                <c:forEach begin = "1" end = "${minesweeper.getRow() - 1}">
+                <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}">
                     <tr>
-                        <c:forEach begin = "1" end = "${minesweeper.getRow()}">
-                            <td class="chill-cell"><button class="sweep-button"><img src="img-fill" alt=""></button></th>
+                        <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}">
+                            <td class="chill-cell"><button class="sweep-button" value="" name=""><img src="img-fill" alt=""></button></th>
                         </c:forEach>
                     </tr>
                 </c:forEach>
