@@ -20,20 +20,31 @@
     <title>Document</title>
 </head>
 <body>
+    <c:set var = "cellArray" scope = "session" value = "${minesweeper.getArray()}"/>
+
     <div class="box">
         <form action="gameServlet" method="post">
             <h1>Minesweeper</h1>
 
-            <c:set var = "difficulty" scope="session" value="${gameBeanObject.getDifficulty()}"/>
+            <c:set var = "difficulty" scope="session" value="${minesweeper.getDifficulty()}"/>
             
             <p id="p-text">Difficulty: <c:out value = "${minesweeper.difficulty}"/></p>
 
-            <!-- new table -->
             <table class="minesweeper-table">
-                <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}">
+                <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "x">
                     <tr>
-                        <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}">
-                            <td class="chill-cell"><button class="sweep-button" value="" name=""><img src="img-fill" alt=""></button></th>
+                        <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "y">
+                            <c:choose>
+                                <c:when test="${cellArray[x.index][y.index].isVisited()}">
+                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></button></th>
+                                </c:when>
+                                <c:when test="${cellArray[x.index][y.index].isMine()}">
+                                        <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">M</button></th>
+                                    </c:when>
+                                <c:otherwise>
+                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">V</button></th>
+                                </c:otherwise>  
+                            </c:choose>                         
                         </c:forEach>
                     </tr>
                 </c:forEach>

@@ -15,18 +15,24 @@ public class GameBean implements Serializable{
     private String difficulty;
     private Cells[][] cellArray;
     private UserBean UserObject;
-
-    private int rowClicked;
-    private int colClicked;
-
+    private boolean mineGenerated;
+    private boolean gameOver;
 
     //constructors 
     public GameBean() { }
 
     public GameBean(String d){
+        gameOver = false;
         difficulty = d;
         setTableSize();
         cellArray = new Cells[row][column];
+        mineGenerated = false;
+
+        for(int i = 0; i < row; i++){
+            for(int j = 0; j < column; j++){
+                cellArray[i][j] = new Cells();
+            }
+        }
     }
 
     // game methods
@@ -37,24 +43,45 @@ public class GameBean implements Serializable{
         }else if(difficulty.equals("Intermediate")){
             row = 15;
             column = 15;
-        }else{
+        }else{                      // Advanced
             row = 20;
             column = 20;
         }
     }
 
-    public void testCell(String c){
-        int rowA = Integer.parseInt(c);
-        
-        /*
-        if(cellSelected.isMine()){
-            - pop-up box saying you fucked up
-            - redirect to newgame.jsp
-            - delete game from session
-        }else{
-            - cellSelected.surroundingMines()
+    public void setMines(){
+        if(mineGenerated){
+            return;
         }
-        */
+
+        // define the range 
+        int max = row*column; 
+        int min = (row*column) / 4; 
+        int range = max - min + 1; 
+
+        // generate random numbers within 1/4 of total cells to total number of cells
+        for (int i = 0; i < max; i++) {
+            // rand = number of mines in the field
+            int rand = (int)(Math.random() * range) + min;
+        }
+        
+        mineGenerated = true;
+    }
+
+    public void testCell(int x, int y){
+        setMines();
+        
+        if(cellArray[x][y].isVisited()){
+            return;
+        }else{
+            if(cellArray[x][y].isFlagged()){
+                return;
+            }else if(cellArray[x][y].isMine()){
+                gameOver = true;
+            }else{
+                cellArray[x][y].setVisited();
+            }
+        }
     }
 
     // mutators
@@ -75,89 +102,12 @@ public class GameBean implements Serializable{
     public int getColumn(){
         return this.column;
     }
+
+    public Cells[][] getArray(){
+        return cellArray;
+    }
+
+    public boolean getWin(){
+        return gameOver;
+    }
 }
-
-/* JOSH GAME MECHANICS
-    public void tableMaker(int x)
-    {
-        cells = new cellBeans[x][x];
-        do{
-            for (int i = 0; i < x; i++)
-            {
-                for(int j = 0; j < x; j++)
-                {
-                    double willItBomb = Math.random();
-                    if (willItBomb < 0.4)
-                    {
-                        cells[i][j].setHasBomb(true);
-                        bombTotal++;
-                    }
-                    else
-                    {
-                        cells[i][j].setHasBomb(false);
-                    }
-                    //Have a grid, manually allocate the first 100 as mines, then shuffle the table
-                }
-            }
-        } while(bombTotal <= ((x*x)/4));
-            //Creating the numbers that show how many bombs are in the vincinity of obsceninty in my eyes
-            
-            for(int i = 0; i < x; i++)
-            {
-                for (int j = 0; j < x; i++)
-                {
-                    checkBombs(i, j);
-                }
-            }
-        }
-
-    public int checkBombs(int i, int j)
-    {
-        if (i < 0 || j < 0 || i >= heightWidth || j >= heightWidth)
-        {
-            return 0;
-        }
-        int surBombTotal = 0;
-        for (int k = -1; k < 2; k++)
-        {
-            for (int l = -1; l < 2; l++)
-            {
-                if ((k+i) < 0 || (l+j) < 0 || (k+i) >= heightWidth || (l+j) >= heightWidth)
-                {
-                    continue;
-                }
-                else
-                {
-                    surBombTotal++;
-                }
-            }
-        }
-        cells[i][j].setSurBombs(surBombTotal);
-        return surBombTotal;
-    }
-
-    public void openDaSpaces(int i, int j)
-    {
-        if (i < 0 || j < 0 || i >= heightWidth || j >= heightWidth)
-        {
-            return;
-        }
-        if (cells[i][j].getIsOpen())
-        {
-            return;
-        }
-        cells[i][j].setIsOpen(true);
-        if (checkBombs(i,j) != 0)
-        {
-            return;
-        }
-        openDaSpaces((i-1), (j-1));
-        openDaSpaces((i), (j-1));
-        openDaSpaces((i+1), (j-1));
-        openDaSpaces((i-1), (j));
-        openDaSpaces((i+1), (j));
-        openDaSpaces((i+1), (j+1));
-        openDaSpaces((i-1), (j+1));
-        openDaSpaces((i), (j+1));
-    }
-*/

@@ -16,9 +16,16 @@ import beans.*;
 public class gameServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
       HttpSession session = request.getSession();
-      String cellPosition = request.getParameter("cell");
+      String cellPosition = request.getParameter("cellLabel");
       
-      session.getAttribute("minesweeper");
+      String[] afterSplit = cellPosition.split(" ");
+
+      int cellX = Integer.parseInt(afterSplit[0]);
+      int cellY = Integer.parseInt(afterSplit[1]);
+      
+      GameBean game = (GameBean)session.getAttribute("minesweeper");
+      
+      game.testCell(cellX, cellY);
       
       response.sendRedirect("game.jsp");
 	}

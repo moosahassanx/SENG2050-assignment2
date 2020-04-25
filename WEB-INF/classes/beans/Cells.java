@@ -8,30 +8,39 @@ public class Cells implements Serializable{
      *
      */
     private static final long serialVersionUID = 1L;
+    
+    private boolean mine;
+    private boolean visited;
+    private boolean flag;
 
+    // constructor
     public Cells() {
-        //
+        visited = false;
+        flag = false;
     }
 
     public boolean isFlagged(){
-        return true;    // temporary value
+        return flag;
     }
 
-    public boolean isMine(){
-        return true;    // temporary value
+    public void setMine(){
+        mine = true;
+    }
+
+    public boolean isMine(){        
+        return mine;
     }
 
     public int surroundingMines(){
-        return 0;       // temporary value
+        return 8;       // temporary value
     }
-    /*
-    [00][01][02][03]
-    [10][11][12][]
-    [2][][][]
-    */
 
-    // opened / clicked
-    public boolean state(){
-        return true;    // temporary value
+    public boolean isVisited(){
+        //return visited;
+        return visited;
+    }
+
+    public void setVisited(){
+        visited = true;
     }
 }
