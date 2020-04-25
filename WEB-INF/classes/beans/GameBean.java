@@ -64,6 +64,10 @@ public class GameBean implements Serializable{
             // rand = number of mines in the field
             int rand = (int)(Math.random() * range) + min;
         }
+
+        for(int i = 0; i < 1; i++){
+            cellArray[0][0].setMine();
+        }
         
         mineGenerated = true;
     }

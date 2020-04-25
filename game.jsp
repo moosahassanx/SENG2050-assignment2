@@ -35,15 +35,20 @@
                     <tr>
                         <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "y">
                             <c:choose>
-                                <c:when test="${cellArray[x.index][y.index].isVisited()}">
-                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></button></th>
-                                </c:when>
                                 <c:when test="${cellArray[x.index][y.index].isMine()}">
-                                        <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">M</button></th>
-                                    </c:when>
+                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">M</button></th>
+                                </c:when>
+                            
                                 <c:otherwise>
-                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">V</button></th>
-                                </c:otherwise>  
+                                    <c:choose>  
+                                        <c:when test="${cellArray[x.index][y.index].isVisited()}">
+                                            <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></button></th>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">V</button></th>
+                                        </c:otherwise>
+                                    </c:choose>
+                                </c:otherwise>
                             </c:choose>                         
                         </c:forEach>
                     </tr>
