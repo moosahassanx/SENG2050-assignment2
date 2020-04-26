@@ -1,5 +1,6 @@
 package beans;
 
+import java.util.Random;
 import java.io.Serializable;
 
 public class GameBean implements Serializable{
@@ -49,24 +50,30 @@ public class GameBean implements Serializable{
         }
     }
 
+    private int getRandomNumberInRange(int min, int max) {
+		Random r = new Random();
+		return r.nextInt((max - min) + 1) + min;
+	}
+
     public void setMines(){
         if(mineGenerated){
             return;
         }
 
-        // define the range 
-        int max = row*column; 
-        int min = (row*column) / 4; 
-        int range = max - min + 1; 
+        // USE THIS ONE BEFORE SUBMITTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        //int rand = getRandomNumberInRange((row*column)/4, row*column);
 
-        // generate random numbers within 1/4 of total cells to total number of cells
-        for (int i = 0; i < max; i++) {
-            // rand = number of mines in the field
-            int rand = (int)(Math.random() * range) + min;
-        }
+        int rand = getRandomNumberInRange(1, 15);
 
-        for(int i = 0; i < 1; i++){
-            cellArray[0][0].setMine();
+        Random random = new Random();
+        while (rand > 0) {
+            int i = getRandomNumberInRange(0, row-1);
+            int j = getRandomNumberInRange(0, column-1);
+            
+            if (!cellArray[i][j].isMine()) {
+                cellArray[i][j].setMine();
+                rand--;
+            }
         }
         
         mineGenerated = true;
@@ -84,8 +91,87 @@ public class GameBean implements Serializable{
                 gameOver = true;
             }else{
                 cellArray[x][y].setVisited();
+                
+                // above
+                if(checkBorder(x, y+1)){
+                    return;
+                }else{
+                    if(cellArray[x][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+                // below
+                if(checkBorder(x, y-1)){
+                    return;
+                }else{
+                    if(cellArray[x][y-1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+                // left
+                if(checkBorder(x-1, y)){
+                    return;
+                }else{
+                    if(cellArray[x-1][y].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+                // right
+                if(checkBorder(x+1, y)){
+                    return;
+                }else{
+                    if(cellArray[x+1][y].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+                // top-right
+                if(checkBorder(x+1, y+1)){
+                    return;
+                }else{
+                    if(cellArray[x+1][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+                // top-left
+                if(checkBorder(x-1, y+1)){
+                    return;
+                }else{
+                    if(cellArray[x-1][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+                // bottom-left
+                if(checkBorder(x-1, y-1)){
+                    return;
+                }else{
+                    if(cellArray[x-1][y-1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+                // bottom-right
+                if(checkBorder(x+1, y-1)){
+                    return;
+                }else{
+                    if(cellArray[x+1][y-1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
             }
         }
+    }
+
+    private boolean checkBorder(int x, int y) {
+        if ((x < 0) || (y < 0) || (x > row-1) || (y > column-1)) {
+            return false;
+        }
+        return true;
     }
 
     // mutators

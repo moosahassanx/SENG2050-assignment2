@@ -23,41 +23,51 @@
     <c:set var = "cellArray" scope = "session" value = "${minesweeper.getArray()}"/>
 
     <div class="box">
-        <form action="gameServlet" method="post">
-            <h1>Minesweeper</h1>
 
-            <c:set var = "difficulty" scope="session" value="${minesweeper.getDifficulty()}"/>
+        <h1>Minesweeper</h1>
+
+        <c:set var = "difficulty" scope="session" value="${minesweeper.getDifficulty()}"/>
             
-            <p id="p-text">Difficulty: <c:out value = "${minesweeper.difficulty}"/></p>
-
-            <table class="minesweeper-table">
-                <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "x">
-                    <tr>
-                        <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "y">
-                            <c:choose>
-                                <c:when test="${cellArray[x.index][y.index].isMine()}">
-                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">M</button></th>
-                                </c:when>
-                            
-                                <c:otherwise>
-                                    <c:choose>  
+            <c:choose>
+                <c:when test="${minesweeper.getWin()}">
+                    <p id="p-text">GAME OVER</p>
+                </c:when>
+                <c:otherwise>
+                    <form action="gameServlet" method="post">
+                    <p id="p-text">Difficulty: <c:out value = "${minesweeper.difficulty}"/></p>
+                    <table class="minesweeper-table">
+                        <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "x">
+                            <tr>
+                                <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "y">
+        
+                                    <c:choose>
                                         <c:when test="${cellArray[x.index][y.index].isVisited()}">
-                                            <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></button></th>
+                                            
+                                            <c:choose>
+                                                <c:when test="${cellArray[x.index][y.index].isMine()}">
+                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">M</button></th>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td class="chill-cell"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></th>
+                                                </c:otherwise>
+                                            </c:choose>
+        
                                         </c:when>
                                         <c:otherwise>
-                                            <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">V</button></th>
+                                            <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel"></button></th>
                                         </c:otherwise>
-                                    </c:choose>
-                                </c:otherwise>
-                            </c:choose>                         
+                                    </c:choose>                       
+                                </c:forEach>
+                            </tr>
                         </c:forEach>
-                    </tr>
-                </c:forEach>
-            </table>
-        </form>
-        <form action="login.jsp" method="post">
-            <input type="submit" name="" value="Save">
-        </form>
+                    </table>
+                </form>
+                <form action="login.jsp" method="post">
+                    <input type="submit" name="" value="Save">
+                </form>
+                </c:otherwise>
+            </c:choose>
+            
         <form action="newgame.jsp" method="post">
             <input type="submit" name="" value="Restart">
         </form>
