@@ -48,7 +48,7 @@
                                                     <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">M</button></th>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <td class="chill-cell"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></th>
+                                                    <td class="chill-cell"><button class="not-sweep-button" value="${x.index} ${y.index}" name="cellLabel"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></button></th>
                                                 </c:otherwise>
                                             </c:choose>
         

@@ -1,3 +1,9 @@
+#surroundingMines{
+    color: white;
+    margin: 0;
+    line-height: 1;
+}
+
 hr{
     width: 60%;
 }
@@ -30,6 +36,15 @@ th, td {
     background-color: #2ECC71;
 }
 
+.not-sweep-button{
+    padding: 0;
+    width: 20px;
+    height: 100%;
+    border: 0;
+    background-color: #191919;
+    color: white;
+}
+
 .sweep-button{
     padding: 0;
     width: 20px;
@@ -47,6 +62,7 @@ th, td {
 .chill-cell{
     background-color: #191919;
     height: 10px;
+    width: 10px;
     transition: 0.25;
 }
 

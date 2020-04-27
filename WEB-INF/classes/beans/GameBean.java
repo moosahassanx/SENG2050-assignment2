@@ -63,6 +63,8 @@ public class GameBean implements Serializable{
         // USE THIS ONE BEFORE SUBMITTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
         //int rand = getRandomNumberInRange((row*column)/4, row*column);
 
+        /*
+        // TESTING 1
         int rand = getRandomNumberInRange(1, 15);
 
         Random random = new Random();
@@ -75,13 +77,18 @@ public class GameBean implements Serializable{
                 rand--;
             }
         }
+        */
+
+        // TESTING 2
+        cellArray[1][1].setMine();
+        cellArray[0][5].setMine();
         
         mineGenerated = true;
     }
 
     public void testCell(int x, int y){
         setMines();
-        
+
         if(cellArray[x][y].isVisited()){
             return;
         }else{
@@ -89,89 +96,192 @@ public class GameBean implements Serializable{
                 return;
             }else if(cellArray[x][y].isMine()){
                 gameOver = true;
+                return;
             }else{
                 cellArray[x][y].setVisited();
                 
-                // above
-                if(checkBorder(x, y+1)){
-                    return;
-                }else{
-                    if(cellArray[x][y+1].isMine()){
-                        cellArray[x][y].surroundCounter();
-                    }
-                }
-                
-                // below
-                if(checkBorder(x, y-1)){
-                    return;
-                }else{
-                    if(cellArray[x][y-1].isMine()){
-                        cellArray[x][y].surroundCounter();
-                    }
-                }
-                
-                // left
-                if(checkBorder(x-1, y)){
-                    return;
-                }else{
-                    if(cellArray[x-1][y].isMine()){
-                        cellArray[x][y].surroundCounter();
-                    }
-                }
-                
-                // right
-                if(checkBorder(x+1, y)){
+                // down
+                if(x+1 >= column){
                     return;
                 }else{
                     if(cellArray[x+1][y].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
-                
-                // top-right
-                if(checkBorder(x+1, y+1)){
+
+                // up
+                if(x-1 < 0){
                     return;
                 }else{
-                    if(cellArray[x+1][y+1].isMine()){
+                    if(cellArray[x-1][y].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
-                
-                // top-left
-                if(checkBorder(x-1, y+1)){
+
+                // left
+                if(y-1 < 0){
                     return;
                 }else{
-                    if(cellArray[x-1][y+1].isMine()){
+                    if(cellArray[x][y-1].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
-                
-                // bottom-left
-                if(checkBorder(x-1, y-1)){
+
+                // right
+                if(y+1 >= row){
                     return;
                 }else{
-                    if(cellArray[x-1][y-1].isMine()){
+                    if(cellArray[x][y+1].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
-                
-                // bottom-right
-                if(checkBorder(x+1, y-1)){
+
+                // down left
+                if((y-1 < 0) || (x+1 >= column)){
                     return;
                 }else{
                     if(cellArray[x+1][y-1].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
+
+                // down right
+                if((x+1 >= column) || (y+1 >= row)){
+                    return;
+                }else{
+                    if(cellArray[x+1][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // up right
+                if((x-1 < 0) || (y+1 >= row)){
+                    return;
+                }else{
+                    if(cellArray[x-1][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // up left
+                if((x-1 < 0) || (y-1 < 0)){
+                    return;
+                }else{
+                    if(cellArray[x-1][y-1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                if(cellArray[x][y].surroundingMines() == 0){
+                    recursiveTestCell(x+1, y);       // down
+                    recursiveTestCell(x-1, y);       // up
+                    recursiveTestCell(x, y-1);       // left
+                    recursiveTestCell(x, y+1);       // right
+                    recursiveTestCell(x+1, y-1);     // down left
+                    recursiveTestCell(x+1, y+1);     // down right
+                    recursiveTestCell(x-1, y+1);     // up right
+                    recursiveTestCell(x-1, y-1);     // up left
+                }
             }
         }
     }
 
-    private boolean checkBorder(int x, int y) {
-        if ((x < 0) || (y < 0) || (x > row-1) || (y > column-1)) {
-            return false;
+    public void recursiveTestCell(int x, int y){
+        if(cellArray[x][y].isVisited()){
+            return;
+        }else{
+            if(cellArray[x][y].isFlagged()){
+                return;
+            }else if(cellArray[x][y].isMine()){
+                gameOver = true;
+                return;
+            }else{
+                cellArray[x][y].setVisited();
+                
+                // down
+                if(x+1 >= column){
+                    return;
+                }else{
+                    if(cellArray[x+1][y].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // up
+                if(x-1 < 0){
+                    return;
+                }else{
+                    if(cellArray[x-1][y].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // left
+                if(y-1 < 0){
+                    return;
+                }else{
+                    if(cellArray[x][y-1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // right
+                if(y+1 >= row){
+                    return;
+                }else{
+                    if(cellArray[x][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // down left
+                if((y-1 < 0) || (x+1 >= column)){
+                    return;
+                }else{
+                    if(cellArray[x+1][y-1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // down right
+                if((x+1 >= column) || (y+1 >= row)){
+                    return;
+                }else{
+                    if(cellArray[x+1][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // up right
+                if((x-1 < 0) || (y+1 >= row)){
+                    return;
+                }else{
+                    if(cellArray[x-1][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                // up left
+                if((x-1 < 0) || (y-1 < 0)){
+                    return;
+                }else{
+                    if(cellArray[x-1][y-1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+
+                if(cellArray[x][y].surroundingMines() == 0){
+                    recursiveTestCell(x, y+1);       // right
+                    recursiveTestCell(x+1, y);       // down
+                    recursiveTestCell(x-1, y);       // up
+                    recursiveTestCell(x, y-1);       // left
+                    recursiveTestCell(x+1, y-1);     // down left
+                    recursiveTestCell(x+1, y+1);     // down right
+                    recursiveTestCell(x-1, y+1);     // up right
+                    recursiveTestCell(x-1, y-1);     // up left
+                }
+            }
         }
-        return true;
     }
 
     // mutators
