@@ -1,5 +1,7 @@
 package beans;
 
+import java.sql.*;
+
 import java.io.Serializable;
 
 public class Cells implements Serializable{

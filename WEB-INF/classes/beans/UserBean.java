@@ -2,6 +2,8 @@ package beans;
 
 import java.io.Serializable;
 
+import java.sql.*;
+
 public class UserBean implements Serializable{
     
     /**

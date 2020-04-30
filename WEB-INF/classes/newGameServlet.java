@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 import beans.UserBean;
 import beans.GameBean;
 
+import java.sql.*;
+
 @WebServlet(urlPatterns = {"/newGameServlet"})
 public class newGameServlet extends HttpServlet {
     public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {

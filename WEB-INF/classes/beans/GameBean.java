@@ -1,5 +1,7 @@
 package beans;
 
+import java.sql.*;
+
 import java.util.Random;
 import java.io.Serializable;
 
