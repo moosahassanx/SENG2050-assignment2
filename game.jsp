@@ -16,7 +16,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
-    <script type="text/javascript" src="js/javascript.js"></script>
+    <script>
+        function testRightClick(event) {
+            event.preventDefault();
+            
+            if (event.which == 3) {
+                alert("right clicked!");
+            }
+        }
+    </script>
     <title>Document</title>
 </head>
 <body>
@@ -26,6 +34,9 @@
 
         <h1>Minesweeper</h1>
 
+        <!-- testing right click -->
+        <button oncontextmenu="testRightClick(event)">right click alert</button>
+        
         <c:set var = "difficulty" scope="session" value="${minesweeper.getDifficulty()}"/>
             
             <c:choose>
@@ -54,7 +65,16 @@
         
                                         </c:when>
                                         <c:otherwise>
-                                            <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel"></button></th>
+
+                                            <c:choose>
+                                                <c:when test="${cellArray[x.index][y.index].isFlagged()}">
+                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">F</button></th>
+                                                </c:when>
+                                                <c:otherwise>
+                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel"></button></th>
+                                                </c:otherwise>
+                                            </c:choose>
+                                            
                                         </c:otherwise>
                                     </c:choose>                       
                                 </c:forEach>
