@@ -22,23 +22,14 @@
         $(document).ready(function(){
             
             $("button").mousedown(function(event){
+                event.preventDefault();
+
                 if(event.which == 3){
-                    alert("jquery button was right clicked");
+                    var position = $(this).val();
+                    window.location.href="http://localhost:8080/SENG2050-assignment2/gameServlet?button=" + position;
                 }
             });
         });
-
-        /*
-        event.preventDefault();
-        
-        if (event.which == 3) {
-            var position = $(this).val();
-
-            window.location.href="http://localhost:8080/SENG2050-assignment2/gameServlet?button=" + position;
-            
-            alert("right clicked! " + position);
-        }
-        */
         
     </script>
     <title>Document</title>
@@ -49,9 +40,6 @@
     <div class="box">
 
         <h1>Minesweeper</h1>
-        <button id="1" name="1" value="1">Button1</button>
-        <button id="2" name="2" value="2">Button2</button>
-
         
         <c:set var = "difficulty" scope="session" value="${minesweeper.getDifficulty()}"/>
             
@@ -84,7 +72,7 @@
                                         
                                             <c:choose>
                                                 <c:when test="${cellArray[x.index][y.index].isFlagged()}">
-                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index}::${y.index}" name="cellLabel">F</button></th>
+                                                    <td class="chill-cell-flagged"><button class="sweep-button-flagged" value="${x.index}::${y.index}" name="cellLabel"></button></th>
                                                 </c:when>
                                                 <c:otherwise>
                                                     <td class="chill-cell"><button class="sweep-button" value="${x.index}::${y.index}" name="cellLabel" id="rightClickBtn" oncontextmenu="testRightClick(event)"></button></th>

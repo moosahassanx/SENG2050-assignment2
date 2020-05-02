@@ -45,6 +45,16 @@ th, td {
     color: white;
 }
 
+.sweep-button-flagged{
+    padding: 0;
+    width: 20px;
+    height: 100%;
+    border: 0;
+    background-color: #2ECC71;
+    transition: 0.25s;
+    color: white;
+}
+
 .sweep-button{
     padding: 0;
     width: 20px;
@@ -61,6 +71,13 @@ th, td {
 
 .chill-cell{
     background-color: #191919;
+    height: 10px;
+    width: 10px;
+    transition: 0.25;
+}
+
+.chill-cell-flagged{
+    background-color: #2ECC71;
     height: 10px;
     width: 10px;
     transition: 0.25;
