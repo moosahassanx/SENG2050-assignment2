@@ -16,14 +16,30 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
     <script>
-        function testRightClick(event) {
-            event.preventDefault();
+
+        $(document).ready(function(){
             
-            if (event.which == 3) {
-                alert("right clicked!");
-            }
+            $("button").mousedown(function(event){
+                if(event.which == 3){
+                    alert("jquery button was right clicked");
+                }
+            });
+        });
+
+        /*
+        event.preventDefault();
+        
+        if (event.which == 3) {
+            var position = $(this).val();
+
+            window.location.href="http://localhost:8080/SENG2050-assignment2/gameServlet?button=" + position;
+            
+            alert("right clicked! " + position);
         }
+        */
+        
     </script>
     <title>Document</title>
 </head>
@@ -33,9 +49,9 @@
     <div class="box">
 
         <h1>Minesweeper</h1>
+        <button id="1" name="1" value="1">Button1</button>
+        <button id="2" name="2" value="2">Button2</button>
 
-        <!-- testing right click -->
-        <button oncontextmenu="testRightClick(event)">right click alert</button>
         
         <c:set var = "difficulty" scope="session" value="${minesweeper.getDifficulty()}"/>
             
@@ -50,31 +66,31 @@
                         <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "x">
                             <tr>
                                 <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "y">
-        
+
                                     <c:choose>
                                         <c:when test="${cellArray[x.index][y.index].isVisited()}">
                                             
                                             <c:choose>
                                                 <c:when test="${cellArray[x.index][y.index].isMine()}">
-                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">M</button></th>
+                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index}::${y.index}" name="cellLabel">M</button></th>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <td class="chill-cell"><button class="not-sweep-button" value="${x.index} ${y.index}" name="cellLabel"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></button></th>
+                                                    <td class="chill-cell"><button class="not-sweep-button" value="${x.index}::${y.index}" name="cellLabel"><c:out value = "${cellArray[x.index][y.index].surroundingMines()}"/></button></th>
                                                 </c:otherwise>
                                             </c:choose>
-        
+                                        
                                         </c:when>
                                         <c:otherwise>
-
+                                        
                                             <c:choose>
                                                 <c:when test="${cellArray[x.index][y.index].isFlagged()}">
-                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel">F</button></th>
+                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index}::${y.index}" name="cellLabel">F</button></th>
                                                 </c:when>
                                                 <c:otherwise>
-                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index} ${y.index}" name="cellLabel"></button></th>
+                                                    <td class="chill-cell"><button class="sweep-button" value="${x.index}::${y.index}" name="cellLabel" id="rightClickBtn" oncontextmenu="testRightClick(event)"></button></th>
                                                 </c:otherwise>
                                             </c:choose>
-                                            
+                                        
                                         </c:otherwise>
                                     </c:choose>                       
                                 </c:forEach>

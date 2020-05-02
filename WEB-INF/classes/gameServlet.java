@@ -16,19 +16,35 @@ import beans.*;
 
 @WebServlet(urlPatterns = {"/gameServlet"})
 public class gameServlet extends HttpServlet {
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      HttpSession session = request.getSession();
-      String cellPosition = request.getParameter("cellLabel");
-      
-      String[] afterSplit = cellPosition.split(" ");
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    String cellPosition = request.getParameter("cellLabel");
+    
+    String[] afterSplit = cellPosition.split("::");
 
-      int cellX = Integer.parseInt(afterSplit[0]);
-      int cellY = Integer.parseInt(afterSplit[1]);
-      
-      GameBean game = (GameBean)session.getAttribute("minesweeper");
-      
-      game.testCell(cellX, cellY);
-      
-      response.sendRedirect("game.jsp");
-	}
+    int cellX = Integer.parseInt(afterSplit[0]);
+    int cellY = Integer.parseInt(afterSplit[1]);
+
+    GameBean game = (GameBean)session.getAttribute("minesweeper");
+    
+    game.testCell(cellX, cellY);
+    
+    response.sendRedirect("game.jsp");
+  }
+
+  public void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    String cellPosition = request.getParameter("button");
+    
+    String[] afterSplit = cellPosition.split("::");
+
+    int cellX = Integer.parseInt(afterSplit[0]);
+    int cellY = Integer.parseInt(afterSplit[1]);
+
+    GameBean game = (GameBean)session.getAttribute("minesweeper");
+
+    game.makeFlagged(cellX, cellY);
+    
+    response.sendRedirect("game.jsp");
+  }
 }

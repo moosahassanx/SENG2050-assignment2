@@ -88,6 +88,14 @@ public class GameBean implements Serializable{
         mineGenerated = true;
     }
 
+    public void makeFlagged(int x, int y){
+        if(cellArray[x][y].isFlagged()){
+            cellArray[x][y].removeFlag();
+        }else{
+            cellArray[x][y].setFlagged();
+        }
+    }
+
     public void testCell(int x, int y){
         setMines();
 

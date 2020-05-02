@@ -27,6 +27,14 @@ public class Cells implements Serializable{
         return flag;
     }
 
+    public void setFlagged(){
+        flag = true;
+    }
+
+    public void removeFlag(){
+        flag = true;
+    }
+
     public void setMine(){
         mine = true;
     }
