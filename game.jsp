@@ -46,10 +46,14 @@
             <c:choose>
                 <c:when test="${minesweeper.getWin()}">
                     <p id="p-text">GAME OVER</p>
+                    <p id="p-text">Time: </p>
                 </c:when>
                 <c:otherwise>
                     <form action="gameServlet" method="post">
                     <p id="p-text">Difficulty: <c:out value = "${minesweeper.difficulty}"/></p>
+                    <p id="timer">00 : 00 . 000</p>
+                    <button id="toggle">Start</button>
+                    <button id="reset">Reset</button>
                     <table class="minesweeper-table">
                         <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "x">
                             <tr>
