@@ -16,14 +16,23 @@ import java.sql.*;
 
 @WebServlet(urlPatterns = {"/newGameServlet"})
 public class newGameServlet extends HttpServlet {
-    public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-      HttpSession session = request.getSession();
-      String username = request.getParameter("username");
-      String difficulty = request.getParameter("gameDifficulty");
-      
+  public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    HttpSession session = request.getSession();
+    String username = request.getParameter("username");
+    String difficulty = request.getParameter("gameDifficulty");
+    
+    if(difficulty.equals("Continue")){
       GameBean gameBeanObject = new GameBean(difficulty);
       session.setAttribute("minesweeper", gameBeanObject);
       
       response.sendRedirect("game.jsp");
-	}
+    }else{
+      GameBean gameBeanObject = new GameBean(difficulty);
+      session.setAttribute("minesweeper", gameBeanObject);
+      
+      response.sendRedirect("game.jsp");
+    }
+
+    
+  }
 }

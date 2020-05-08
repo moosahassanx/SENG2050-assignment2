@@ -30,7 +30,7 @@
         <input type="submit" name="gameDifficulty" value="Intermediate">
         <input type="submit" name="gameDifficulty" value="Advanced">
         <hr>
-        <input type="submit" name="" value="Continue">
+        <input type="submit" name="gameDifficulty" value="Continue">
     </form>
 </body>
 </html>

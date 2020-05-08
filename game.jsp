@@ -20,13 +20,13 @@
     <script>
 
         $(document).ready(function(){
-            
-            $("button").mousedown(function(event){
+
+            $("button").mouseup(function(event){
                 event.preventDefault();
 
                 if(event.which == 3){
                     var position = $(this).val();
-                    window.location.href="http://localhost:8080/SENG2050-assignment2/gameServlet?button=" + position;
+                    window.location.href="http://localhost:8080/c3331532_assignment2/gameServlet?button=" + position;
                 }
             });
         });
@@ -46,14 +46,11 @@
             <c:choose>
                 <c:when test="${minesweeper.getWin()}">
                     <p id="p-text">GAME OVER</p>
-                    <p id="p-text">Time: </p>
+                    <p id="p-text"><c:out value = "${minesweeper.getTimeElapsed()}"/> seconds</p>
                 </c:when>
                 <c:otherwise>
                     <form action="gameServlet" method="post">
                     <p id="p-text">Difficulty: <c:out value = "${minesweeper.difficulty}"/></p>
-                    <p id="timer">00 : 00 . 000</p>
-                    <button id="toggle">Start</button>
-                    <button id="reset">Reset</button>
                     <table class="minesweeper-table">
                         <c:forEach begin = "0" end = "${minesweeper.getRow() - 1}" varStatus = "x">
                             <tr>

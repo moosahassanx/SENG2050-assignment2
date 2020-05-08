@@ -1,9 +1,14 @@
 package beans;
 
+import javax.sql.*;
 import java.sql.*;
+import javax.naming.*;
+import javax.naming.InitialContext;
 
 import java.util.Random;
 import java.io.Serializable;
+import java.time.Duration;
+import java.time.Instant;
 
 public class GameBean implements Serializable{
     
@@ -14,12 +19,26 @@ public class GameBean implements Serializable{
 
     private int row;
     private int column;
-    private String time;
     private String difficulty;
     private Cells[][] cellArray;
-    private UserBean UserObject;
     private boolean mineGenerated;
     private boolean gameOver;
+    Instant start = Instant.now();
+    private Duration timeElapsed;
+    
+    private final DataSource dataSource = makeDataSource();
+    
+    private DataSource makeDataSource(){
+        try{
+            InitialContext ctx = new InitialContext();
+            return (DataSource) ctx.lookup("java:/comp/env/c3331532_assignment2/c3331532_database");
+        }catch (NamingException e){
+            throw new RuntimeException(e);
+        }
+    }
+    public Connection getConnection() throws SQLException{
+        return dataSource.getConnection();
+    }
 
     //constructors 
     public GameBean() { }
@@ -105,6 +124,8 @@ public class GameBean implements Serializable{
             if(cellArray[x][y].isFlagged()){
                 return;
             }else if(cellArray[x][y].isMine()){
+                Instant end = Instant.now();
+                timeElapsed = Duration.between(start, end);
                 gameOver = true;
                 return;
             }else{
@@ -181,7 +202,7 @@ public class GameBean implements Serializable{
                         cellArray[x][y].surroundCounter();
                     }
                 }
-
+                
                 if(cellArray[x][y].surroundingMines() == 0){
                     recursiveTestCell(x+1, y);       // down
                     recursiveTestCell(x-1, y);       // up
@@ -192,6 +213,8 @@ public class GameBean implements Serializable{
                     recursiveTestCell(x-1, y+1);     // up right
                     recursiveTestCell(x-1, y-1);     // up left
                 }
+
+                
             }
         }
     }
@@ -319,5 +342,9 @@ public class GameBean implements Serializable{
 
     public boolean getWin(){
         return gameOver;
+    }
+
+    public long getTimeElapsed() {
+        return timeElapsed.toMillis() / 1000;
     }
 }
