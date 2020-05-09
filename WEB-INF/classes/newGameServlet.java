@@ -22,12 +22,12 @@ public class newGameServlet extends HttpServlet {
     String difficulty = request.getParameter("gameDifficulty");
     
     if(difficulty.equals("Continue")){
-      GameBean gameBeanObject = new GameBean(difficulty);
+      GameBean gameBeanObject = new GameBean(difficulty, username);
       session.setAttribute("minesweeper", gameBeanObject);
       
       response.sendRedirect("game.jsp");
     }else{
-      GameBean gameBeanObject = new GameBean(difficulty);
+      GameBean gameBeanObject = new GameBean(difficulty, username);
       session.setAttribute("minesweeper", gameBeanObject);
       
       response.sendRedirect("game.jsp");

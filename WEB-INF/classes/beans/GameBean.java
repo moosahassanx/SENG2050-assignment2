@@ -3,20 +3,22 @@ package beans;
 import javax.sql.*;
 import java.sql.*;
 import javax.naming.*;
-import javax.naming.InitialContext;
 
 import java.util.Random;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 
-public class GameBean implements Serializable{
-    
+public class GameBean implements Serializable {
+
     /**
      *
      */
     private static final long serialVersionUID = 1L;
 
+    private String username;
     private int row;
     private int column;
     private String difficulty;
@@ -25,36 +27,129 @@ public class GameBean implements Serializable{
     private boolean gameOver;
     Instant start = Instant.now();
     private Duration timeElapsed;
-    
+
     private final DataSource dataSource = makeDataSource();
-    
-    private DataSource makeDataSource(){
-        try{
+
+    private DataSource makeDataSource() {
+        try {
             InitialContext ctx = new InitialContext();
             return (DataSource) ctx.lookup("java:/comp/env/c3331532_assignment2/c3331532_database");
-        }catch (NamingException e){
+        } catch (NamingException e) {
             throw new RuntimeException(e);
         }
     }
-    public Connection getConnection() throws SQLException{
+
+    public Connection getConnection() throws SQLException {
         return dataSource.getConnection();
     }
 
-    //constructors 
-    public GameBean() { }
+    // constructors
+    public GameBean() {
+    }
 
-    public GameBean(String d){
+    public GameBean(String d, String u) {
+        username = u;
         gameOver = false;
         difficulty = d;
         setTableSize();
         cellArray = new Cells[row][column];
         mineGenerated = false;
 
-        for(int i = 0; i < row; i++){
-            for(int j = 0; j < column; j++){
+        for (int i = 0; i < row; i++) {
+            for (int j = 0; j < column; j++) {
                 cellArray[i][j] = new Cells();
             }
         }
+    }
+
+    public void saveGame() throws NamingException, SQLException {
+        System.out.println("saveGame() method successfully loaded");
+
+
+        // step 1
+        InitialContext ctx = new InitialContext();                                                                  // used to store application scoped resources
+        DataSource ds = (DataSource) ctx.lookup("java:/comp/env/c3331532_assignment2/c3331532_database");           // explore what resources have been defined java:/comp/env/folder/database
+
+        Connection conn = ds.getConnection();                                                                       // connection to database server (pooled connection)
+        String query = "SELECT * FROM beanStorage WHERE username = ?";                                              // specify query
+        Statement stmt = conn.createStatement();                                                                    // create statement to execute query
+        ResultSet rs = stmt.executeQuery(query);                                                                    // execute our statement 
+
+
+        // step 2
+        
+
+        /* PSEUDOCODE
+
+        get a list of all the usernames in the database
+        iterate through every username in the database
+
+        if(username already exists){
+            UPDATE tableName SET gameBean = serialisedBeanObject WHERE username = this.username
+        }else{
+            INSERT INTO tableName VALUES(username, serializedBeanObject)
+        }
+
+        */
+    }
+
+    public void loadGame() throws NamingException, SQLException {
+        System.out.println("loadGame() method successfully loaded");
+
+        InitialContext ctx = new InitialContext();                                                                  // used to store application scoped resources
+        DataSource ds = (DataSource) ctx.lookup("java:/comp/env/c3331532_assignment2/c3331532_database");           // explore what resources have been defined java:/comp/env/folder/database
+
+        Connection conn = ds.getConnection();                                                                       // connection to database server (pooled connection)
+        String query = "SELECT * FROM beanStorage WHERE username = ?";                                              // specify query
+        Statement stmt = conn.createStatement();                                                                    // create statement to execute query
+        ResultSet rs = stmt.executeQuery(query);                                                                    // execute our statement   
+
+        // result set table (cursor moves around)
+        while(rs.next()){                                                                                           // iterate through every row
+            rs.getString("username").equals(username);
+
+
+            /*
+            String title = rs.getString("title");                                                                   // inspection needed
+            int year = rs.getInt("year");
+            String url = rs.getString("url");
+            */
+            
+        }
+
+        /* GOD CODE
+        makeDataSource();
+        System.out.println("DataSource executed");
+
+        System.out.println(this.username != null ? this.username : "quite dumb");
+
+        String query = "SELECT * FROM games WHERE username = ?";
+
+        statement.setString(1, this.username);
+
+        ResultSet rs = statement.executeQuery();
+
+        if(rs.next()){
+            String updateQuery = "UPDATE games SET gameGrid = ? WHERE username = ?";
+            PreparedStatement updateStatement = source.getConnection().prepareStatement(updateQuery);
+
+            updateStatement.setString(1, this.serialise());
+            updateStatement.setString(2, this.username);
+            
+            updateStatement.execute();
+        }else{
+            String updateQuery = "INSERT INTO games(username, gameGrid) VALUES (?, ?)";
+            PreparedStatement updateStatement = source.getConnection().prepareStatement(updateQuery);
+
+            updateStatement.setString(1, this.username);
+            updateStatement.setString(2, this.serialise());
+
+
+            updateStatement.execute();
+        }
+
+        source.getConnection().close();
+        */
     }
 
     // game methods
@@ -346,5 +441,9 @@ public class GameBean implements Serializable{
 
     public long getTimeElapsed() {
         return timeElapsed.toMillis() / 1000;
+    }
+
+    public String getUsername(){
+        return username;
     }
 }

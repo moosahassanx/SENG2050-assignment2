@@ -87,8 +87,10 @@
                         </c:forEach>
                     </table>
                 </form>
-                <form action="login.jsp" method="post">
+                <form action="saveServlet" method="post">
                     <input type="submit" name="" value="Save">
+                    <input type="hidden" name="difficulty" value="${minesweeper.getDifficulty()}">
+                    <input type="hidden" name="username" value="${minesweeper.getUsername()}">
                 </form>
                 </c:otherwise>
             </c:choose>

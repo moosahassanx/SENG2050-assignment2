@@ -21,16 +21,21 @@
 <body>
     <!-- takes username -->
     
-    <form class="box" action="newGameServlet" method="post">
-        <h1>Select Level</h1>
-
-        <p id="p-text">User: <c:out value = "${user.getUsername()}"/></p>
-        <input type="hidden" name="username" value="<c:out value = "${user.getUsername()}"/>">
-        <input type="submit" name="gameDifficulty" value="Beginner">
-        <input type="submit" name="gameDifficulty" value="Intermediate">
-        <input type="submit" name="gameDifficulty" value="Advanced">
-        <hr>
-        <input type="submit" name="gameDifficulty" value="Continue">
-    </form>
+    <div class="box">
+        <form action="newGameServlet" method="post">
+            <h1>Select Level</h1>
+    
+            <p id="p-text">User: <c:out value = "${user.getUsername()}"/></p>
+            <input type="hidden" name="username" value="<c:out value = "${user.getUsername()}"/>">
+            <input type="submit" name="gameDifficulty" value="Beginner">
+            <input type="submit" name="gameDifficulty" value="Intermediate">
+            <input type="submit" name="gameDifficulty" value="Advanced">
+            <hr>
+        </form>
+        <form action="loadServlet" method="post">
+            <input type="submit" name="gameDifficulty" value="Continue">
+        </form>
+    </div>
+    
 </body>
 </html>
