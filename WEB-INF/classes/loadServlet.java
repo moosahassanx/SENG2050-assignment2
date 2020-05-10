@@ -20,12 +20,11 @@ import beans.*;
 public class loadServlet extends HttpServlet {
   public void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
     HttpSession session = request.getSession();
-    String cellPosition = request.getParameter("cellLabel");
-    
     GameBean game = (GameBean)session.getAttribute("minesweeper");
+    String username = request.getParameter("username");
     
     try{
-      game.loadGame();
+      game.loadGame(username);
     }catch(Exception e){
       System.out.println(e);
     }

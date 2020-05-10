@@ -26,3 +26,5 @@ SELECT * FROM beanStorage;
 
 -- SELECT * FROM beanStorage WHERE username = 'chef7';
 
+UPDATE beanStorage SET username = 'chef11' WHERE username = 'chef1';
+

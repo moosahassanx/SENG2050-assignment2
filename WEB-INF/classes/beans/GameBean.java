@@ -8,8 +8,10 @@ import java.io.Serializable;
 import java.util.Random;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.time.Instant;
 
@@ -23,9 +25,12 @@ public class GameBean implements Serializable {
     private Cells[][] cellArray;
     private boolean mineGenerated;
     private boolean gameOver;
+    private boolean win;
     private long start;
     private long end;
     private long duration;
+    private int numberOfMines;
+    private int unopened;
 
     // constructors
     public GameBean() {
@@ -33,8 +38,11 @@ public class GameBean implements Serializable {
     }
 
     public GameBean(String d, String u) {
+        win = false;
+        numberOfMines = 0;
         username = u;
         gameOver = false;
+        win = false;
         difficulty = d;
         setTableSize();
         cellArray = new Cells[row][column];
@@ -67,78 +75,80 @@ public class GameBean implements Serializable {
         System.out.println("USERNAME: " + username + " and its GameBean has been stored");
     }
 
-    public void loadGame() throws NamingException, SQLException {
+    public void loadGame(String u) throws NamingException, SQLException, IOException, ClassNotFoundException {
         System.out.println("loadGame() method successfully loaded");
 
         // connection
         InitialContext ctx = new InitialContext();                                                                  // used to store application scoped resources
         DataSource ds = (DataSource) ctx.lookup("java:/comp/env/c3331532_assignment2/c3331532_database");           // explore what resources have been defined java:/comp/env/folder/database
         Connection conn = ds.getConnection();                                                                       // connection to database server (pooled connection)
+        System.out.println("successfully connected");
 
-        String query = "SELECT * FROM beanStorage WHERE username = ?";                                              // specify query
-        Statement stmt = conn.createStatement();                                                                    // create statement to execute query
+        // querying database
+        String query = "SELECT * FROM beanStorage WHERE username = ?";
         PreparedStatement ss2 = conn.prepareStatement(query);
-        ss2.setString(1, username);
-        
-        ResultSet rs = stmt.executeQuery(query);                                                                    // execute our statement   
-        System.out.println("666666");
+        ss2.setString(1, u);
+        ResultSet rs = ss2.executeQuery();
+        System.out.println("SELECT * FROM beanStorage WHERE username = " + u);
 
-        // result set table (cursor moves around)
-        if(rs.next()){                                                                                           // iterate through every row
-            System.out.println("7777777");
-            rs.getString("username").equals(username);
-            System.out.println("8888888");
-            
+        if(rs.next()){
+            // storing byte from sql as a separate byte
+            byte[] loadByte = rs.getBytes("gameBean");
+
+            // deserialising the loadByte object
+            ByteArrayInputStream bs = new ByteArrayInputStream(loadByte);
+            ObjectInputStream os = new ObjectInputStream(bs);
+
+            try{
+                // making a new object and storing the same data onto it
+                GameBean loadGame = (GameBean) os.readObject();
+
+                // set attributes to this object from the new object
+                this.username = loadGame.getUsername();
+                this.row = loadGame.getRow();
+                this.column = loadGame.getColumn();
+                this.difficulty = loadGame.getDifficulty();
+                this.cellArray = loadGame.getArray();
+                this.mineGenerated = loadGame.getMineGenerated();
+                this.gameOver = loadGame.getLose();
+                this.start = loadGame.getStart();
+                this.end = loadGame.getEnd();
+                this.duration = loadGame.getTimeElapsed();
+
+            }catch(NotSerializableException e){
+                System.out.println("SERVLET WRITE OBJECT ERROR: " + e);
+            }
+
+            // updating database
+            String queryUpdate = "UPDATE beanStorage SET gameBean = ? WHERE username ?";
+            PreparedStatement ss3 = conn.prepareStatement(queryUpdate);
+            ss3.setBytes(1, loadByte);
+            ss3.setString(2, u);
+            ss3.executeQuery();
+            System.out.println("UPDATE beanStorage SET ... successful");
+
+            // closing
+            ds.getConnection().close();
         }
 
-        
+        ds.getConnection().close();
 
-
-
-
-        /*
-        this.username = username;
-        
-        System.out.println("111111111111111111111");
-
-        DataSource source = (DataSource) new InitialContext().lookup("java:/comp/env/jdbc/SENG2050");
-
-        System.out.println("222222222222222222222");
-
-        String query = "SELECT * FROM games WHERE username = ?";
-
-        PreparedStatement statement = source.getConnection().prepareStatement(query);
-        System.out.println("333333333333333333333");
-        
-        statement.setString(1, username);
-
-        ResultSet rs = statement.executeQuery();
-        System.out.println("444444444444444444444");
-        if (rs.next())
-        {
-            this.deserialise(rs.getString("gameGrid"));
-            gridWidth = gridHeight = grid.length;
-            source.getConnection().close();
-            return true;
-        }
-        source.getConnection().close();
-        System.out.println("555555555555555555555");
-
-        return false;
-        */
     }
 
-    // game methods
+	// game methods
     public void setTableSize(){
         if(difficulty.equals("Beginner")){
             row = 10;
             column = 10;
+            unopened = 100;
         }else if(difficulty.equals("Intermediate")){
             row = 15;
             column = 15;
+            unopened = 225;
         }else{                      // Advanced
             row = 20;
             column = 20;
+            unopened = 400;
         }
     }
 
@@ -152,12 +162,14 @@ public class GameBean implements Serializable {
             return;
         }
 
-        // USE THIS ONE BEFORE SUBMITTING!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        // SUBMISSION TESTING
         //int rand = getRandomNumberInRange((row*column)/4, row*column);
 
-        /*
+        
         // TESTING 1
-        int rand = getRandomNumberInRange(1, 15);
+        int rand = getRandomNumberInRange(1, 20);
+
+        numberOfMines = rand;
 
         Random random = new Random();
         while (rand > 0) {
@@ -169,11 +181,6 @@ public class GameBean implements Serializable {
                 rand--;
             }
         }
-        */
-
-        // TESTING 2
-        cellArray[1][1].setMine();
-        cellArray[0][5].setMine();
         
         mineGenerated = true;
     }
@@ -200,95 +207,100 @@ public class GameBean implements Serializable {
                 gameOver = true;
                 return;
             }else{
-                cellArray[x][y].setVisited();
                 
-                // down
-                if(x+1 >= column){
-                    return;
+                // top
+                if(x+1 >= row){
+                    //
                 }else{
                     if(cellArray[x+1][y].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
 
-                // up
+                // bottom
                 if(x-1 < 0){
-                    return;
+                    //
                 }else{
                     if(cellArray[x-1][y].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
 
-                // left
+                // right
                 if(y-1 < 0){
-                    return;
+                    //
                 }else{
                     if(cellArray[x][y-1].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
 
-                // right
-                if(y+1 >= row){
-                    return;
+                // left
+                if(y+1 >= column){
+                    //
                 }else{
                     if(cellArray[x][y+1].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
 
-                // down left
-                if((y-1 < 0) || (x+1 >= column)){
-                    return;
-                }else{
-                    if(cellArray[x+1][y-1].isMine()){
-                        cellArray[x][y].surroundCounter();
-                    }
-                }
-
-                // down right
-                if((x+1 >= column) || (y+1 >= row)){
-                    return;
-                }else{
-                    if(cellArray[x+1][y+1].isMine()){
-                        cellArray[x][y].surroundCounter();
-                    }
-                }
-
-                // up right
-                if((x-1 < 0) || (y+1 >= row)){
-                    return;
-                }else{
-                    if(cellArray[x-1][y+1].isMine()){
-                        cellArray[x][y].surroundCounter();
-                    }
-                }
-
-                // up left
-                if((x-1 < 0) || (y-1 < 0)){
-                    return;
+                // bottom right
+                if(x-1 < 0 || y-1 < 0){
+                    //
                 }else{
                     if(cellArray[x-1][y-1].isMine()){
                         cellArray[x][y].surroundCounter();
                     }
                 }
                 
-                if(cellArray[x][y].surroundingMines() == 0){
-                    recursiveTestCell(x+1, y);       // down
-                    recursiveTestCell(x-1, y);       // up
-                    recursiveTestCell(x, y-1);       // left
-                    recursiveTestCell(x, y+1);       // right
-                    recursiveTestCell(x+1, y-1);     // down left
-                    recursiveTestCell(x+1, y+1);     // down right
-                    recursiveTestCell(x-1, y+1);     // up right
-                    recursiveTestCell(x-1, y-1);     // up left
+
+                // bottom left
+                if(x-1 < 0 || y+1 >= column){
+                    //
+                }else{
+                    if(cellArray[x-1][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
                 }
+                
+
+                // top left
+                if(x+1 >= row || y+1 >= column){
+                    //
+                }else{
+                    if(cellArray[x+1][y+1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+
+                // top right
+                if(x+1 >= row || y-1 < 0){
+                    //
+                }else{
+                    if(cellArray[x+1][y-1].isMine()){
+                        cellArray[x][y].surroundCounter();
+                    }
+                }
+                
+                // mark the cell as visited
+                cellArray[x][y].setVisited();
+                unopened--;
+                checkWin();
                 
             }
         }
     }
 
+    public void checkWin(){
+        if(numberOfMines == unopened){
+            end = Instant.now().toEpochMilli();
+            duration = start - end;
+            win = true;
+        }
+    }
+    
+    // not necessary but yo 
     public void recursiveTestCell(int x, int y){
         if(cellArray[x][y].isVisited()){
             return;
@@ -410,15 +422,31 @@ public class GameBean implements Serializable {
         return cellArray;
     }
 
-    public boolean getWin(){
+    public boolean getLose(){
         return gameOver;
+    }
+
+    public boolean getWin(){
+        return win;
+    }
+
+    public long getStart(){
+        return start;
+    }
+
+    public long getEnd(){
+        return end;
     }
     
     public long getTimeElapsed() {
-        return duration;
+        return -(duration/1000);
     }
 
     public String getUsername(){
         return username;
+    }
+
+    public boolean getMineGenerated(){
+        return mineGenerated;
     }
 }
