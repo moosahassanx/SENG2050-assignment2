@@ -1,8 +1,8 @@
 <Context>
 	<Resource name="c3331532_assignment2/c3331532_database" 
 	type="javax.sql.DataSource"
-	username="dbuser"
-	password="dbuser"
+	username="c3331532Admin"
+	password="Qwerty123"
 	driverClassName="com.microsoft.sqlserver.jdbc.SQLServerDriver"
-	url="jdbc:sqlserver://localhost;databaseName=c3331532_database" />
+	url="jdbc:sqlserver://localhost:1433;databaseName=c3331532_database;" />
 </Context>

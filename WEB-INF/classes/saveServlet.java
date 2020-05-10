@@ -21,8 +21,30 @@ public class saveServlet extends HttpServlet {
     String cellPosition = request.getParameter("cellLabel");
     
     GameBean game = (GameBean)session.getAttribute("minesweeper");
+
+    // serialising the GameBean object
+    ByteArrayOutputStream bs = new ByteArrayOutputStream();
+    ObjectOutputStream os = new ObjectOutputStream(bs);
+    GameBean saveGame = game;
+
+    try{
+      os.writeObject(saveGame);                                           // tomcat messes up here
+    }catch(NotSerializableException e){
+      System.out.println("SERVLET ERROR: " + e);
+    }
     
-    game.saveGame();
+    // closing
+    os.flush();
+    os.close();
+    bs.close();
+    
+    byte[] gameOrWhatever = bs.toByteArray();
+
+    try{
+      game.saveGame(gameOrWhatever);
+    }catch(Exception e){
+      System.out.println(e);
+    }
     
     response.sendRedirect("login.jsp");
   }

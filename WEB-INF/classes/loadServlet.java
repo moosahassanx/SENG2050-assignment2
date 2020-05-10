@@ -1,7 +1,9 @@
+
 // Import required java libraries
 import java.io.*;
 import java.util.Random;
 
+import javax.naming.NamingException;
 import javax.servlet.*;
 import javax.servlet.http.*;
 import javax.servlet.annotation.WebServlet;
@@ -22,7 +24,11 @@ public class loadServlet extends HttpServlet {
     
     GameBean game = (GameBean)session.getAttribute("minesweeper");
     
-    game.saveGame();
+    try{
+      game.loadGame();
+    }catch(Exception e){
+      System.out.println(e);
+    }
     
     response.sendRedirect("game.jsp");
   }
